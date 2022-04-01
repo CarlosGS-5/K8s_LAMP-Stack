@@ -1,0 +1,39 @@
+version: "3"
+services:
+ server:
+  container_name: server
+  image: carlosgs5/my-php:1.2.0
+  ports:
+   - '8080:80'
+  restart: 'always'
+  links:
+   - "db"
+  volumes:
+   - ./website:/var/www/html/
+ db:
+  container_name: db
+  image: mysql:latest
+  ports:
+   - '5506:3306'
+  restart: 'always'
+  environment:
+   MYSQL_USER: carlos
+   MYSQL_ROOT_PASSWORD: secret
+   MYSQL_PASSWORD: secret
+  volumes:
+   - dump:/var/lib/mysql
+ phpmyadmin:
+  container_name: phpmyadmin
+  image: phpmyadmin/phpmyadmin
+  restart: 'always'
+  ports:
+   - '8087:80'
+  environment:
+   - PMA_HOST=db
+   - PMA_PASSWORD=secret
+  depends_on:
+   - db
+  links:
+   - db
+volumes:
+ dump:
